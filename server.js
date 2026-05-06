@@ -9,7 +9,7 @@ const app = express();
 app.use(express.json());
 app.use(express.static("."));
 
-// 🔥 Firebase Admin (from ENV)
+// 🔥 Firebase Admin
 const serviceAccount = JSON.parse(process.env.FIREBASE_KEY);
 
 admin.initializeApp({
@@ -18,13 +18,13 @@ admin.initializeApp({
 
 const db = admin.firestore();
 
-// 🎤 Get Voice ID
+// 🎤 get voiceId
 async function getVoiceId() {
   const doc = await db.collection("voiceProfile").doc("main").get();
   return doc.data().voiceId;
 }
 
-// 🔊 TTS API
+// 🔊 TTS
 app.post("/tts", async (req, res) => {
   try {
     const { text } = req.body;
@@ -58,9 +58,5 @@ app.post("/tts", async (req, res) => {
   }
 });
 
-// 🚀 PORT (IMPORTANT for Render)
 const PORT = process.env.PORT || 3000;
-
-app.listen(PORT, () => {
-  console.log("Server running on " + PORT);
-});
+app.listen(PORT, () => console.log("Server running " + PORT));
