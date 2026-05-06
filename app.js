@@ -1,76 +1,74 @@
-// 🔥 Firebase Config
-const firebaseConfig = {
-   apiKey: "AIzaSyD-ujf42Fi33YZp2pJ-lrOgJMHpu-byLdk",
-  authDomain: "ai-voice-to-text-khmer.firebaseapp.com",
-  projectId: "ai-voice-to-text-khmer"
-};
-
-firebase.initializeApp(firebaseConfig);
-
-const auth = firebase.auth();
-const db = firebase.firestore();
-
-
-// 🔐 LOGIN
+// 🔥 Firebase (optional login only)
 function login() {
-  const email = document.getElementById("email").value;
-  const pass = document.getElementById("password").value;
-
-  auth.signInWithEmailAndPassword(email, pass)
-    .then(() => alert("Login success"))
-    .catch(err => alert(err.message));
+  alert("Login system can be added with Firebase Auth");
 }
 
 
-// 🆕 SIGNUP
-function signup() {
-  const email = document.getElementById("email").value;
-  const pass = document.getElementById("password").value;
-
-  auth.createUserWithEmailAndPassword(email, pass)
-    .then(() => alert("Signup success"))
-    .catch(err => alert(err.message));
-}
-
-
-// 🎤 SPEAK (FULL FIXED)
+// 🎤 TEXT TO SPEECH
 async function speak() {
-  try {
-    const text = document.getElementById("text").value;
+  const text = document.getElementById("text").value;
 
-    const res = await fetch("/tts", {
-      method: "POST",
-      headers: {"Content-Type":"application/json"},
-      body: JSON.stringify({ text })
-    });
+  const res = await fetch("/tts", {
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({ text })
+  });
 
-    const data = await res.json();
+  const data = await res.json();
 
-    console.log("TTS RESPONSE:", data);
+  if (!data.audio) return alert("Error");
 
-    // ❌ FIX undefined crash
-    if (!data || !data.audio) {
-      alert("Voice API failed");
-      return;
-    }
+  document.getElementById("audio").src = data.audio;
+}
 
-    document.getElementById("audio").src = data.audio;
 
-    // 🔥 SAVE TO FIREBASE SAFE
-    const user = auth.currentUser;
+// 🎙 RECORD VOICE
+let recorder;
+let chunks = [];
 
-    if (user) {
-      await db.collection("users")
-        .doc(user.uid)
-        .collection("history")
-        .add({
-          text: text,
-          audio: data.audio,
-          createdAt: new Date()
-        });
-    }
+async function startRecord() {
+  const stream = await navigator.mediaDevices.getUserMedia({ audio:true });
 
-  } catch (err) {
-    console.log("ERROR:", err);
-  }
+  recorder = new MediaRecorder(stream);
+  chunks = [];
+
+  recorder.ondataavailable = e => chunks.push(e.data);
+
+  recorder.start();
+
+  document.getElementById("status").innerText = "Recording...";
+}
+
+
+// ⏹ STOP + UPLOAD
+function stopRecord() {
+  recorder.stop();
+
+  recorder.onstop = async () => {
+    const blob = new Blob(chunks, { type:"audio/webm" });
+
+    document.getElementById("preview").src =
+      URL.createObjectURL(blob);
+
+    await uploadVoice(blob);
+  };
+}
+
+
+// ☁️ UPLOAD
+async function uploadVoice(blob) {
+  const file = new File([blob], "voice.webm");
+
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const res = await fetch("/upload-voice", {
+    method:"POST",
+    body: formData
+  });
+
+  const data = await res.json();
+
+  document.getElementById("status").innerText =
+    "Uploaded ✔ " + data.url;
 }
