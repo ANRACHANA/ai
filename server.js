@@ -18,16 +18,25 @@ admin.initializeApp({
 
 const db = admin.firestore();
 
-// 🎤 get voiceId
+// 🎤 Get Voice ID safely
 async function getVoiceId() {
   const doc = await db.collection("voiceProfile").doc("main").get();
+
+  if (!doc.exists || !doc.data()?.voiceId) {
+    throw new Error("voiceId missing in Firestore");
+  }
+
   return doc.data().voiceId;
 }
 
-// 🔊 TTS
+// 🔊 TTS API (FIXED)
 app.post("/tts", async (req, res) => {
   try {
     const { text } = req.body;
+
+    if (!text) {
+      return res.status(400).json({ error: "No text provided" });
+    }
 
     const voiceId = await getVoiceId();
 
@@ -46,6 +55,11 @@ app.post("/tts", async (req, res) => {
       }
     );
 
+    if (!response.ok) {
+      const err = await response.text();
+      throw new Error(err);
+    }
+
     const audio = await response.arrayBuffer();
     const base64 = Buffer.from(audio).toString("base64");
 
@@ -54,9 +68,11 @@ app.post("/tts", async (req, res) => {
     });
 
   } catch (err) {
+    console.error("TTS ERROR:", err.message);
     res.status(500).json({ error: err.message });
   }
 });
 
+// 🚀 PORT FIX
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log("Server running " + PORT));
+app.listen(PORT, () => console.log("Server running on " + PORT));
