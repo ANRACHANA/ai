@@ -2,19 +2,15 @@ import express from "express";
 import fetch from "node-fetch";
 import admin from "firebase-admin";
 import dotenv from "dotenv";
-import fs from "fs";
 
 dotenv.config();
 
 const app = express();
 app.use(express.json());
-
 app.use(express.static("."));
 
-// 🔥 Firebase setup
-const serviceAccount = JSON.parse(
-  fs.readFileSync("./firebase-key.json")
-);
+// 🔥 FIX: use ENV instead of file
+const serviceAccount = JSON.parse(process.env.FIREBASE_KEY);
 
 admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
@@ -62,4 +58,7 @@ app.post("/tts", async (req, res) => {
   }
 });
 
-app.listen(3000, () => console.log("Server running"));
+// 🔥 IMPORTANT: use Render port
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => console.log("Server running on " + PORT));
