@@ -9,7 +9,7 @@ const app = express();
 app.use(express.json());
 app.use(express.static("."));
 
-// 🔥 FIX: use ENV instead of file
+// 🔥 Firebase Admin (from ENV)
 const serviceAccount = JSON.parse(process.env.FIREBASE_KEY);
 
 admin.initializeApp({
@@ -18,13 +18,13 @@ admin.initializeApp({
 
 const db = admin.firestore();
 
-// 🎤 Get VOICE_ID from Firebase
+// 🎤 Get Voice ID
 async function getVoiceId() {
   const doc = await db.collection("voiceProfile").doc("main").get();
   return doc.data().voiceId;
 }
 
-// 🔊 Text → Voice API
+// 🔊 TTS API
 app.post("/tts", async (req, res) => {
   try {
     const { text } = req.body;
@@ -58,7 +58,9 @@ app.post("/tts", async (req, res) => {
   }
 });
 
-// 🔥 IMPORTANT: use Render port
+// 🚀 PORT (IMPORTANT for Render)
 const PORT = process.env.PORT || 3000;
 
-app.listen(PORT, () => console.log("Server running on " + PORT));
+app.listen(PORT, () => {
+  console.log("Server running on " + PORT);
+});
