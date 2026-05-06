@@ -6,7 +6,9 @@ const firebaseConfig = {
 };
 
 firebase.initializeApp(firebaseConfig);
+
 const auth = firebase.auth();
+const db = firebase.firestore();
 
 // 🔐 Login
 function login() {
@@ -18,7 +20,7 @@ function login() {
     .catch(err => alert(err.message));
 }
 
-// 🎤 Speak Voice
+// 🎤 Speak + Auto Save
 async function speak() {
   const text = document.getElementById("text").value;
 
@@ -31,4 +33,18 @@ async function speak() {
   const data = await res.json();
 
   document.getElementById("audio").src = data.audio;
+
+  // 🔥 AUTO SAVE TO FIREBASE
+  const user = auth.currentUser;
+
+  if (user) {
+    await db.collection("users")
+      .doc(user.uid)
+      .collection("history")
+      .add({
+        text: text,
+        audio: data.audio,
+        createdAt: new Date()
+      });
+  }
 }
