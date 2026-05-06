@@ -1,103 +1,50 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
 <meta charset="UTF-8">
 <title>Khmer AI Voice</title>
 
-<!-- Firebase -->
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
-
 <style>
-
-body {
-  margin: 0;
-  font-family: Arial;
-  background: #0f172a;
-  color: white;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  min-height: 100vh;
+body{
+  background:#0f172a;
+  color:white;
+  font-family:Arial;
+  display:flex;
+  justify-content:center;
+  padding:40px;
 }
 
-/* CARD */
-.container {
-  width: 420px;
-  background: #111827;
-  padding: 25px;
-  border-radius: 15px;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+.box{
+  width:420px;
+  background:#111827;
+  padding:20px;
+  border-radius:15px;
 }
 
-/* TITLE */
-h2 {
-  text-align: center;
-  margin-bottom: 20px;
-  color: #38bdf8;
+input, textarea{
+  width:100%;
+  padding:10px;
+  margin:5px 0;
 }
 
-/* INPUT */
-input, textarea {
-  width: 100%;
-  padding: 12px;
-  margin: 8px 0;
-  border-radius: 8px;
-  border: none;
-  outline: none;
-  background: #1f2937;
-  color: white;
+button{
+  width:100%;
+  padding:10px;
+  margin-top:10px;
+  background:#38bdf8;
+  border:none;
+  cursor:pointer;
 }
 
-/* BUTTON */
-button {
-  width: 100%;
-  padding: 12px;
-  margin-top: 10px;
-  border: none;
-  border-radius: 8px;
-  background: #38bdf8;
-  color: black;
-  font-weight: bold;
-  cursor: pointer;
-  transition: 0.2s;
+audio{
+  width:100%;
 }
-
-button:hover {
-  background: #0ea5e9;
-  transform: scale(1.02);
-}
-
-/* SECOND BUTTON */
-.btn2 {
-  background: #22c55e;
-}
-
-.btn2:hover {
-  background: #16a34a;
-}
-
-/* AUDIO */
-audio {
-  width: 100%;
-  margin-top: 15px;
-}
-
-/* SMALL TEXT */
-small {
-  display: block;
-  text-align: center;
-  margin-top: 10px;
-  color: #94a3b8;
-}
-
 </style>
 </head>
 
 <body>
 
-<div class="container">
+<div class="box">
 
 <h2>🎤 Khmer AI Voice</h2>
 
@@ -105,19 +52,27 @@ small {
 <input id="email" placeholder="Email">
 <input id="password" type="password" placeholder="Password">
 
-<button onclick="login()">🔐 Login</button>
-<button class="btn2" onclick="signup()">🆕 Sign Up</button>
+<button onclick="login()">Login</button>
 
-<hr style="margin:20px 0; border:1px solid #334155">
+<hr>
 
-<!-- TEXT -->
-<textarea id="text" rows="5" placeholder="Enter text in Khmer or English..."></textarea>
-
-<button onclick="speak()">🔊 Generate Voice</button>
+<!-- TEXT TO SPEECH -->
+<textarea id="text" placeholder="Type text"></textarea>
+<button onclick="speak()">🔊 Speak</button>
 
 <audio id="audio" controls></audio>
 
-<small>Powered by AI Voice System</small>
+<hr>
+
+<!-- RECORD VOICE -->
+<h3>🎙 Record Voice</h3>
+
+<button onclick="startRecord()">Start Record</button>
+<button onclick="stopRecord()">Stop & Upload</button>
+
+<audio id="preview" controls></audio>
+
+<p id="status"></p>
 
 </div>
 
