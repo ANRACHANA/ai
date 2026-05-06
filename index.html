@@ -1,33 +1,125 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>AI Voice App</title>
+<meta charset="UTF-8">
+<title>Khmer AI Voice</title>
 
-  <!-- Firebase (compat) -->
-  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore-compat.js"></script>
+
+<style>
+
+body {
+  margin: 0;
+  font-family: Arial;
+  background: #0f172a;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+}
+
+/* CARD */
+.container {
+  width: 420px;
+  background: #111827;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+/* TITLE */
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #38bdf8;
+}
+
+/* INPUT */
+input, textarea {
+  width: 100%;
+  padding: 12px;
+  margin: 8px 0;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+  background: #1f2937;
+  color: white;
+}
+
+/* BUTTON */
+button {
+  width: 100%;
+  padding: 12px;
+  margin-top: 10px;
+  border: none;
+  border-radius: 8px;
+  background: #38bdf8;
+  color: black;
+  font-weight: bold;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+button:hover {
+  background: #0ea5e9;
+  transform: scale(1.02);
+}
+
+/* SECOND BUTTON */
+.btn2 {
+  background: #22c55e;
+}
+
+.btn2:hover {
+  background: #16a34a;
+}
+
+/* AUDIO */
+audio {
+  width: 100%;
+  margin-top: 15px;
+}
+
+/* SMALL TEXT */
+small {
+  display: block;
+  text-align: center;
+  margin-top: 10px;
+  color: #94a3b8;
+}
+
+</style>
 </head>
 
 <body>
 
-<h2>🔐 Login / SignUp + 🎤 Voice AI</h2>
+<div class="container">
 
-<input id="email" placeholder="Email"><br><br>
-<input id="password" type="password" placeholder="Password"><br><br>
+<h2>🎤 Khmer AI Voice</h2>
 
-<button onclick="signup()">Sign Up</button>
-<button onclick="login()">Login</button>
+<!-- LOGIN -->
+<input id="email" placeholder="Email">
+<input id="password" type="password" placeholder="Password">
 
-<hr>
+<button onclick="login()">🔐 Login</button>
+<button class="btn2" onclick="signup()">🆕 Sign Up</button>
 
-<textarea id="text" rows="5" cols="40"></textarea><br><br>
+<hr style="margin:20px 0; border:1px solid #334155">
 
-<button onclick="speak()">🔊 Speak</button>
+<!-- TEXT -->
+<textarea id="text" rows="5" placeholder="Enter text in Khmer or English..."></textarea>
 
-<br><br>
+<button onclick="speak()">🔊 Generate Voice</button>
+
 <audio id="audio" controls></audio>
+
+<small>Powered by AI Voice System</small>
+
+</div>
 
 <script src="app.js"></script>
 
