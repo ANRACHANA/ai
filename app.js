@@ -1,6 +1,6 @@
 // 🔥 Firebase Config
 const firebaseConfig = {
-  apiKey: "AIzaSyD-ujf42Fi33YZp2pJ-lrOgJMHpu-byLdk",
+   apiKey: "AIzaSyD-ujf42Fi33YZp2pJ-lrOgJMHpu-byLdk",
   authDomain: "ai-voice-to-text-khmer.firebaseapp.com",
   projectId: "ai-voice-to-text-khmer"
 };
@@ -10,17 +10,33 @@ firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
 
-// 🔐 Login
+
+// 🆕 SIGN UP
+function signup() {
+  const email = document.getElementById("email").value;
+  const pass = document.getElementById("password").value;
+
+  auth.createUserWithEmailAndPassword(email, pass)
+    .then(() => alert("Signup success"))
+    .catch(err => alert(err.message));
+}
+
+
+// 🔐 LOGIN
 function login() {
   const email = document.getElementById("email").value;
   const pass = document.getElementById("password").value;
 
   auth.signInWithEmailAndPassword(email, pass)
     .then(() => alert("Login success"))
-    .catch(err => alert(err.message));
+    .catch(err => {
+      console.log(err.code);
+      alert(err.message);
+    });
 }
 
-// 🎤 Speak + Auto Save
+
+// 🎤 SPEAK + SAVE
 async function speak() {
   const text = document.getElementById("text").value;
 
@@ -34,7 +50,6 @@ async function speak() {
 
   document.getElementById("audio").src = data.audio;
 
-  // 🔥 AUTO SAVE TO FIREBASE
   const user = auth.currentUser;
 
   if (user) {
@@ -42,9 +57,11 @@ async function speak() {
       .doc(user.uid)
       .collection("history")
       .add({
-        text: text,
+        text,
         audio: data.audio,
         createdAt: new Date()
       });
+  } else {
+    alert("Please login first");
   }
 }
